@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SupeRR Selector Season 2 – Candidate Journey</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 18mm 20mm 18mm;
+    }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      color: #0f172a;
+      line-height: 1.6;
+      font-size: 11pt;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+    }
+    .header-box {
+      border-bottom: 2px solid #e10b65;
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+    .badge {
+      display: inline-block;
+      background: #fdf2f8;
+      color: #e10b65;
+      font-weight: 700;
+      font-size: 9pt;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+    h1 {
+      font-size: 22pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 4px 0 6px 0;
+      letter-spacing: -0.02em;
+    }
+    .author-info {
+      font-size: 9.5pt;
+      color: #64748b;
+    }
+    .quote-card {
+      background: #f8fafc;
+      border-left: 4px solid #e10b65;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+      font-size: 11pt;
+      color: #1e293b;
+      line-height: 1.7;
+    }
+    h2 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+    }
+    .grid {
+      display: table;
+      width: 100%;
+      margin: 16px 0;
+    }
+    .col {
+      display: table-cell;
+      width: 33.33%;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .col-mid {
+      border-left: none;
+      border-right: none;
+    }
+    .stat-val {
+      font-size: 18pt;
+      font-weight: 800;
+      color: #e10b65;
+      font-family: monospace;
+    }
+    .stat-lbl {
+      font-size: 8.5pt;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .link-box {
+      margin-top: 30px;
+      padding: 12px 16px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 9.5pt;
+      color: #334155;
+    }
+    .link-box a {
+      color: #e10b65;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-box">
+    <div class="badge">Rajasthan Royals • SupeRR Selector Season 2</div>
+    <h1>Behind the Screen: Our Analytics Journey</h1>
+    <div class="author-info">
+      Submitted by: <strong>Tamilvendhan C</strong> (GitHub: @tamilvendhan444) • Round 1 Candidate Submission
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col">
+      <div class="stat-val">191,903</div>
+      <div class="stat-lbl">Deliveries Analyzed</div>
+    </div>
+    <div class="col col-mid">
+      <div class="stat-val">803</div>
+      <div class="stat-lbl">IPL & T20I Matches</div>
+    </div>
+    <div class="col">
+      <div class="stat-val">93%</div>
+      <div class="stat-lbl">Top-Tier Bootstrap Stability</div>
+    </div>
+  </div>
+
+  <h2>1. The Problem Statement & Our Mindset</h2>
+  <p>
+    When approaching Round 1 of the SupeRR Selector challenge, our mission was clear: <em>can data genuinely isolate who rises when the game is on the line?</em> Traditional player rankings rely heavily on aggregate metrics like career strike rate and raw batting average. However, in modern T20 cricket, these stats often create an illusion—rewarding players who pile on runs in low-leverage "garbage time" while penalizing death bowlers who take on the hardest micro-windows.
+  </p>
+
+  <h2>2. Our Journey Statement (Submission Narrative)</h2>
+  <div class="quote-card">
+    "Participating in SupeRR Selector Season 2 with Rajasthan Royals has been an exhilarating analytical journey!
+    <br><br>
+    Our biggest challenge was defining what genuine 'pressure' means in modern T20 cricket. Traditional stats like raw strike rate or economy often mislead due to low-leverage stat inflation in lost chases or dead rubbers. To solve this, we parsed 191,903 deliveries across 803 IPL and T20I matches, engineering a dynamic win-probability leverage index (LI &ge; 1.5x) and opposition-adjusted ridge regression.
+    <br><br>
+    The most fascinating breakthrough was discovering that true clutch performers—like Shreyas Iyer, Shubman Gill, and Josh Hazlewood (each with 93% bootstrap stability)—aren't unpredictable gamblers. Rather, their elite baseline simply does not dip when the game is on the line.
+    <br><br>
+    From statistical modeling to building an interactive public dashboard, this challenge pushed us to think like a real franchise war-room!"
+  </div>
+
+  <h2>3. The Breakthrough Moments</h2>
+  <ul>
+    <li><strong>Moving to Win Probability Added (WPA):</strong> Normalizing ball values against match leverage allowed us to measure the exact shift in win equity on every single delivery.</li>
+    <li><strong>The "Rise vs. Usual" Discovery:</strong> We realized that clutch performance isn't just about explosive spikes—it is defined by elite consistency. Players like Gill, Iyer, and Hazlewood prove that the highest form of reliability is refusing to drop below your standard under extreme stress.</li>
+    <li><strong>Full-Stack Analytics Delivery:</strong> Rather than producing static spreadsheets, we built an end-to-end reproducible workflow: an econometric methodology report, automated bootstrap validations, and an interactive GitHub Pages dashboard.</li>
+  </ul>
+
+  <div class="link-box">
+    <strong>Project Repository:</strong> <a href="https://github.com/tamilvendhan444/rr_report">https://github.com/tamilvendhan444/rr_report</a><br>
+    <strong>Live Interactive Dashboard:</strong> <a href="https://tamilvendhan444.github.io/rr_report/">https://tamilvendhan444.github.io/rr_report/</a>
+  </div>
+
+</body>
+</html>
