@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
+  </style>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-0 m-0 text-xs">
+  <div class="border border-[var(--card-border)] rounded-2xl bg-[var(--card)] p-4 space-y-3 shadow-lg">
+    
+    <!-- Header & Toggle Bar -->
+    <div class="flex items-center justify-between pb-2 border-b border-[var(--card-border)]">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-[#e10b65] text-white font-black text-[10px]">RR</span>
+        <div>
+          <div class="font-bold text-sm tracking-tight text-[var(--foreground)]">SupeRR Selector S2 Dashboard</div>
+          <div class="text-[10px] text-[var(--muted-foreground)]">191,903 Balls • 803 Matches • Leverage &ge; 1.5x</div>
+        </div>
+      </div>
+
+      <!-- Pill Tabs -->
+      <div class="flex p-0.5 bg-[var(--background)] rounded-lg border border-[var(--card-border)]">
+        <button id="btn-b" onclick="setMode('batters')" class="px-3 py-1 rounded-md font-semibold text-[11px] bg-[#e10b65] text-white transition">
+          🏏 Batters
+        </button>
+        <button id="btn-bo" onclick="setMode('bowlers')" class="px-3 py-1 rounded-md font-semibold text-[11px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">
+          🎯 Bowlers
+        </button>
+      </div>
+    </div>
+
+    <!-- Active View Container -->
+    <div class="overflow-x-auto custom-scroll" style="max-height: 290px;">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-[var(--card-border)] text-[var(--muted-foreground)] uppercase text-[9px] font-bold">
+            <th class="py-1.5 px-2">#</th>
+            <th class="py-1.5 px-2">Player</th>
+            <th class="py-1.5 px-2 text-right">Balls</th>
+            <th id="col-metric" class="py-1.5 px-2 text-right">SR (Press/Usual)</th>
+            <th class="py-1.5 px-2 text-right">Consist.</th>
+            <th class="py-1.5 px-2 text-right">Score</th>
+            <th class="py-1.5 px-2 text-right">Boot %</th>
+          </tr>
+        </thead>
+        <tbody id="table-body" class="divide-y divide-[var(--card-border)] font-mono text-[11px]">
+          <!-- Injected via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bottom Selected Detail Banner -->
+    <div id="detail-banner" class="p-2.5 rounded-xl bg-[var(--background)] border border-[var(--card-border)] flex items-center justify-between text-[11px]">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-[#e10b65]" id="sel-name">#1 Shreyas Iyer</span>
+        <span class="text-[var(--muted-foreground)]" id="sel-role">Anchor / Finisher</span>
+      </div>
+      <div class="font-mono text-emerald-400 font-bold" id="sel-stat">Rating: 0.127 | Boot: 93%</div>
+    </div>
+
+  </div>
+
+  <script>
+    const BATTERS = [
+      { rank: 1, name: "Shreyas Iyer", balls: 323, m1: 173, m2: 153, d: "+20", consist: "74%", score: "2.02", boot: "93%", role: "Tier 1 Outlier • Elite Spin Hitter" },
+      { rank: 2, name: "Shubman Gill", balls: 379, m1: 174, m2: 147, d: "+27", consist: "81%", score: "1.99", boot: "93%", role: "Tier 1 Outlier • High-Floor Anchor" },
+      { rank: 3, name: "Virat Kohli", balls: 430, m1: 156, m2: 145, d: "+11", consist: "77%", score: "1.40", boot: "40%", role: "Volume Chase Specialist" },
+      { rank: 4, name: "Glenn Phillips", balls: 184, m1: 148, m2: 151, d: "-3", consist: "73%", score: "1.38", boot: "57%", role: "Crisis Counter-Puncher" },
+      { rank: 5, name: "Jos Buttler", balls: 345, m1: 172, m2: 156, d: "+16", consist: "72%", score: "1.26", boot: "43%", role: "Explosive Opener/Closer" },
+      { rank: 6, name: "Rinku Singh", balls: 223, m1: 169, m2: 150, d: "+19", consist: "69%", score: "1.21", boot: "37%", role: "Death Closer (Lowest Outs)" },
+      { rank: 7, name: "Travis Head", balls: 148, m1: 196, m2: 176, d: "+20", consist: "69%", score: "1.05", boot: "37%", role: "High-Intent Powerplay Disrupter" },
+      { rank: 8, name: "Abhishek Sharma", balls: 296, m1: 191, m2: 190, d: "+1", consist: "69%", score: "1.01", boot: "33%", role: "Maximum Intent Enforcer" },
+      { rank: 9, name: "Phil Salt", balls: 217, m1: 174, m2: 175, d: "-1", consist: "79%", score: "0.99", boot: "30%", role: "Aggressive Opener" },
+      { rank: 10, name: "Saim Ayub", balls: 103, m1: 187, m2: 133, d: "+54", consist: "65%", score: "0.93", boot: "30%", role: "Highest Rise vs Usual (+0.232)" }
+    ];
+
+    const BOWLERS = [
+      { rank: 1, name: "Josh Hazlewood", balls: 231, m1: 9.01, m2: 8.42, d: "25 Wkts", consist: "52%", score: "2.58", boot: "93%", role: "Supreme #1 • Test-Length Enforcer" },
+      { rank: 2, name: "Krunal Pandya", balls: 234, m1: 7.79, m2: 8.00, d: "16 Wkts", consist: "50%", score: "1.74", boot: "60%", role: "Middle-Overs Squeeze (-0.21 Econ)" },
+      { rank: 3, name: "Taskin Ahmed", balls: 157, m1: 6.57, m2: 8.58, d: "12 Wkts", consist: "44%", score: "1.52", boot: "40%", role: "Huge Drop in Econ Under Pressure" },
+      { rank: 4, name: "Sunil Narine", balls: 304, m1: 6.97, m2: 6.88, d: "15 Wkts", consist: "45%", score: "1.49", boot: "60%", role: "Mystery Spin Lockout (6.97 Econ)" },
+      { rank: 5, name: "Rashid Khan", balls: 424, m1: 7.75, m2: 7.51, d: "30 Wkts", consist: "38%", score: "1.25", boot: "30%", role: "Most Pressure Deliveries (424)" },
+      { rank: 6, name: "Sufiyan Muqeem", balls: 114, m1: 4.58, m2: 6.56, d: "9 Wkts", consist: "52%", score: "1.24", boot: "43%", role: "Lowest Economy Rate (4.58 Econ)" },
+      { rank: 7, name: "Mohsin Khan", balls: 146, m1: 8.67, m2: 8.58, d: "12 Wkts", consist: "42%", score: "1.24", boot: "40%", role: "Death Yorker Pacer" },
+      { rank: 8, name: "Kuldeep Yadav", balls: 302, m1: 7.55, m2: 8.15, d: "20 Wkts", consist: "50%", score: "1.23", boot: "33%", role: "Wrist-Spin Wicket Magnet" },
+      { rank: 9, name: "Varun Chakravarthy", balls: 390, m1: 7.71, m2: 8.27, d: "27 Wkts", consist: "48%", score: "1.16", boot: "57%", role: "Matchup & Deception Specialist" },
+      { rank: 10, name: "Ravichandran Ashwin", balls: 218, m1: 8.06, m2: 7.88, d: "11 Wkts", consist: "45%", score: "1.16", boot: "37%", role: "Chessmaster (+0.119 Rise)" }
+    ];
+
+    let currentMode = 'batters';
+
+    function setMode(mode) {
+      currentMode = mode;
+      const btnB = document.getElementById('btn-b');
+      const btnBo = document.getElementById('btn-bo');
+      const colM = document.getElementById('col-metric');
+
+      if (mode === 'batters') {
+        btnB.className = "px-3 py-1 rounded-md font-semibold text-[11px] bg-[#e10b65] text-white transition";
+        btnBo.className = "px-3 py-1 rounded-md font-semibold text-[11px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition";
+        colM.innerText = "SR (Press / Usual)";
+        render(BATTERS);
+      } else {
+        btnBo.className = "px-3 py-1 rounded-md font-semibold text-[11px] bg-[#0284c7] text-white transition";
+        btnB.className = "px-3 py-1 rounded-md font-semibold text-[11px] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition";
+        colM.innerText = "Econ (Press / Usual)";
+        render(BOWLERS);
+      }
+    }
+
+    function render(list) {
+      const tb = document.getElementById('table-body');
+      tb.innerHTML = '';
+      list.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-[var(--background)] cursor-pointer transition";
+        tr.onclick = () => selectRow(p);
+        const isLeader = p.rank <= 2;
+        const colorClass = isLeader ? "text-[#e10b65] font-bold" : "text-[var(--foreground)]";
+        
+        tr.innerHTML = `
+          <td class="py-1.5 px-2 ${colorClass}">#${p.rank}</td>
+          <td class="py-1.5 px-2 font-sans font-medium text-[var(--foreground)]">${p.name}</td>
+          <td class="py-1.5 px-2 text-right text-[var(--muted-foreground)]">${p.balls}</td>
+          <td class="py-1.5 px-2 text-right"><span class="font-bold text-[var(--foreground)]">${p.m1}</span> <span class="text-[9px] text-[var(--muted-foreground)]">/ ${p.m2}</span></td>
+          <td class="py-1.5 px-2 text-right text-cyan-400">${p.consist}</td>
+          <td class="py-1.5 px-2 text-right font-bold text-[#e10b65]">${p.score}</td>
+          <td class="py-1.5 px-2 text-right font-bold ${parseInt(p.boot) >= 60 ? 'text-emerald-400' : 'text-[var(--muted-foreground)]'}">${p.boot}</td>
+        `;
+        tb.appendChild(tr);
+      });
+      selectRow(list[0]);
+    }
+
+    function selectRow(p) {
+      document.getElementById('sel-name').innerText = `#${p.rank} ${p.name}`;
+      document.getElementById('sel-role').innerText = p.role;
+      document.getElementById('sel-stat').innerText = `Score: ${p.score} | Boot: ${p.boot}`;
+    }
+
+    render(BATTERS);
+  </script>
+</body>
+</html>

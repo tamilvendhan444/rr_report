@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Identifying the Most Reliable Players Under Pressure</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      line-height: 1.45;
+      font-size: 10.5pt;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+    }
+    .page-break { page-break-after: always; }
+    h1 {
+      color: #0f172a;
+      font-size: 20pt;
+      font-weight: 800;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      color: #e10b65;
+      font-size: 11pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #0f172a;
+      font-size: 13pt;
+      font-weight: 700;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 4px;
+    }
+    h3 {
+      color: #1e293b;
+      font-size: 11pt;
+      font-weight: 700;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+    p, li {
+      color: #334155;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+    ul {
+      margin: 6px 0 12px 18px;
+      padding: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 16px 0;
+      font-size: 8.5pt;
+    }
+    th {
+      background-color: #0f172a;
+      color: #ffffff;
+      font-weight: 600;
+      text-align: left;
+      padding: 6px 7px;
+      border: 1px solid #0f172a;
+    }
+    th.text-right, td.text-right { text-align: right; }
+    td {
+      padding: 5px 7px;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
+    }
+    tr:nth-child(even) td { background-color: #f8fafc; }
+    .badge {
+      font-weight: bold;
+      color: #e10b65;
+    }
+    .callout {
+      background: #fdf2f8;
+      border-left: 4px solid #e10b65;
+      padding: 8px 12px;
+      margin: 12px 0;
+      font-size: 9.5pt;
+      color: #831843;
+    }
+    .note {
+      font-style: italic;
+      color: #64748b;
+      font-size: 8.5pt;
+      margin-top: 4px;
+    }
+    .footer-bar {
+      margin-top: 24px;
+      padding-top: 8px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 8pt;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1 -->
+  <h1>Identifying the Most Reliable Players Under Pressure</h1>
+  <div class="subtitle">SupeRR Selector Season 2 – Round 1 Methodology Report</div>
+
+  <h2>1. Summary and final rankings</h2>
+  <p>
+    We built a leverage-based pressure index from a win-probability model, rated every batter and bowler on how much they add to their side's winning chances on high-pressure deliveries (relative to peers, after adjusting for the opposition), compared that with their ordinary-situation level, and added a consistency measure. Ratings are averaged over five reasonable definitions of "high pressure" so that the ranking does not depend on one arbitrary cut-off. The analysis uses <strong>191,903 deliveries</strong> from <strong>803 matches</strong> (383 IPL/T20 league matches and 420 T20Is, 2022–2026).
+  </p>
+
+  <h3>Top 10 batters under pressure</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:5%;">Rank</th>
+        <th style="width:23%;">Batter</th>
+        <th class="text-right">Press. balls</th>
+        <th class="text-right">SR press.</th>
+        <th class="text-right">SR usual</th>
+        <th class="text-right">Outs</th>
+        <th class="text-right">Press. rating</th>
+        <th class="text-right">Rise vs usual</th>
+        <th class="text-right">Consist.</th>
+        <th class="text-right">Score</th>
+        <th class="text-right">Top-10 boot.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td><strong>Shreyas Iyer</strong></td>
+        <td class="text-right">323</td>
+        <td class="text-right">173</td>
+        <td class="text-right">153</td>
+        <td class="text-right">9</td>
+        <td class="text-right">0.127</td>
+        <td class="text-right">-0.009</td>
+        <td class="text-right">0.74</td>
+        <td class="text-right"><strong>2.02</strong></td>
+        <td class="text-right"><strong>93%</strong></td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td><strong>Shubman Gill</strong></td>
+        <td class="text-right">379</td>
+        <td class="text-right">174</td>
+        <td class="text-right">147</td>
+        <td class="text-right">10</td>
+        <td class="text-right">0.132</td>
+        <td class="text-right">+0.034</td>
+        <td class="text-right">0.81</td>
+        <td class="text-right"><strong>1.99</strong></td>
+        <td class="text-right"><strong>93%</strong></td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>Virat Kohli</td>
+        <td class="text-right">430</td>
+        <td class="text-right">156</td>
+        <td class="text-right">145</td>
+        <td class="text-right">12</td>
+        <td class="text-right">0.104</td>
+        <td class="text-right">-0.072</td>
+        <td class="text-right">0.77</td>
+        <td class="text-right">1.40</td>
+        <td class="text-right">40%</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td>Glenn Phillips</td>
+        <td class="text-right">184</td>
+        <td class="text-right">148</td>
+        <td class="text-right">151</td>
+        <td class="text-right">6</td>
+        <td class="text-right">0.092</td>
+        <td class="text-right">+0.045</td>
+        <td class="text-right">0.73</td>
+        <td class="text-right">1.38</td>
+        <td class="text-right">57%</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td>Jos Buttler</td>
+        <td class="text-right">345</td>
+        <td class="text-right">172</td>
+        <td class="text-right">156</td>
+        <td class="text-right">14</td>
+        <td class="text-right">0.099</td>
+        <td class="text-right">-0.059</td>
+        <td class="text-right">0.72</td>
+        <td class="text-right">1.26</td>
+        <td class="text-right">43%</td>
+      </tr>
+      <tr>
+        <td><strong>6</strong></td>
+        <td>Rinku Singh</td>
+        <td class="text-right">223</td>
+        <td class="text-right">169</td>
+        <td class="text-right">150</td>
+        <td class="text-right">9</td>
+        <td class="text-right">0.061</td>
+        <td class="text-right">-0.053</td>
+        <td class="text-right">0.69</td>
+        <td class="text-right">1.21</td>
+        <td class="text-right">37%</td>
+      </tr>
+      <tr>
+        <td><strong>7</strong></td>
+        <td>Travis Head</td>
+        <td class="text-right">148</td>
+        <td class="text-right">196</td>
+        <td class="text-right">176</td>
+        <td class="text-right">6</td>
+        <td class="text-right">0.088</td>
+        <td class="text-right">+0.157</td>
+        <td class="text-right">0.69</td>
+        <td class="text-right">1.05</td>
+        <td class="text-right">37%</td>
+      </tr>
+      <tr>
+        <td><strong>8</strong></td>
+        <td>Abhishek Sharma</td>
+        <td class="text-right">296</td>
+        <td class="text-right">191</td>
+        <td class="text-right">190</td>
+        <td class="text-right">19</td>
+        <td class="text-right">0.081</td>
+        <td class="text-right">-0.047</td>
+        <td class="text-right">0.69</td>
+        <td class="text-right">1.01</td>
+        <td class="text-right">33%</td>
+      </tr>
+      <tr>
+        <td><strong>9</strong></td>
+        <td>Phil Salt</td>
+        <td class="text-right">217</td>
+        <td class="text-right">174</td>
+        <td class="text-right">175</td>
+        <td class="text-right">7</td>
+        <td class="text-right">0.088</td>
+        <td class="text-right">-0.041</td>
+        <td class="text-right">0.79</td>
+        <td class="text-right">0.99</td>
+        <td class="text-right">30%</td>
+      </tr>
+      <tr>
+        <td><strong>10</strong></td>
+        <td>Saim Ayub</td>
+        <td class="text-right">103</td>
+        <td class="text-right">187</td>
+        <td class="text-right">133</td>
+        <td class="text-right">5</td>
+        <td class="text-right">0.081</td>
+        <td class="text-right">+0.232</td>
+        <td class="text-right">0.65</td>
+        <td class="text-right">0.93</td>
+        <td class="text-right">30%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Top 10 bowlers under pressure</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:5%;">Rank</th>
+        <th style="width:23%;">Bowler</th>
+        <th class="text-right">Press. balls</th>
+        <th class="text-right">Econ press.</th>
+        <th class="text-right">Econ usual</th>
+        <th class="text-right">Wkts</th>
+        <th class="text-right">Press. rating</th>
+        <th class="text-right">Rise vs usual</th>
+        <th class="text-right">Consist.</th>
+        <th class="text-right">Score</th>
+        <th class="text-right">Top-10 boot.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td><strong>Josh Hazlewood</strong></td>
+        <td class="text-right">231</td>
+        <td class="text-right">9.01</td>
+        <td class="text-right">8.42</td>
+        <td class="text-right">25</td>
+        <td class="text-right">0.131</td>
+        <td class="text-right">+0.003</td>
+        <td class="text-right">0.52</td>
+        <td class="text-right"><strong>2.58</strong></td>
+        <td class="text-right"><strong>93%</strong></td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td><strong>Krunal Pandya</strong></td>
+        <td class="text-right">234</td>
+        <td class="text-right">7.79</td>
+        <td class="text-right">8.00</td>
+        <td class="text-right">16</td>
+        <td class="text-right">0.125</td>
+        <td class="text-right">+0.076</td>
+        <td class="text-right">0.50</td>
+        <td class="text-right"><strong>1.74</strong></td>
+        <td class="text-right">60%</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>Taskin Ahmed</td>
+        <td class="text-right">157</td>
+        <td class="text-right">6.57</td>
+        <td class="text-right">8.58</td>
+        <td class="text-right">12</td>
+        <td class="text-right">0.062</td>
+        <td class="text-right">+0.062</td>
+        <td class="text-right">0.44</td>
+        <td class="text-right">1.52</td>
+        <td class="text-right">40%</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td>Sunil Narine</td>
+        <td class="text-right">304</td>
+        <td class="text-right">6.97</td>
+        <td class="text-right">6.88</td>
+        <td class="text-right">15</td>
+        <td class="text-right">0.091</td>
+        <td class="text-right">+0.023</td>
+        <td class="text-right">0.45</td>
+        <td class="text-right">1.49</td>
+        <td class="text-right">60%</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td>Rashid Khan</td>
+        <td class="text-right">424</td>
+        <td class="text-right">7.75</td>
+        <td class="text-right">7.51</td>
+        <td class="text-right">30</td>
+        <td class="text-right">0.071</td>
+        <td class="text-right">+0.022</td>
+        <td class="text-right">0.38</td>
+        <td class="text-right">1.25</td>
+        <td class="text-right">30%</td>
+      </tr>
+      <tr>
+        <td><strong>6</strong></td>
+        <td>Sufiyan Muqeem</td>
+        <td class="text-right">114</td>
+        <td class="text-right">4.58</td>
+        <td class="text-right">6.56</td>
+        <td class="text-right">9</td>
+        <td class="text-right">0.087</td>
+        <td class="text-right">+0.017</td>
+        <td class="text-right">0.52</td>
+        <td class="text-right">1.24</td>
+        <td class="text-right">43%</td>
+      </tr>
+      <tr>
+        <td><strong>7</strong></td>
+        <td>Mohsin Khan</td>
+        <td class="text-right">146</td>
+        <td class="text-right">8.67</td>
+        <td class="text-right">8.58</td>
+        <td class="text-right">12</td>
+        <td class="text-right">0.089</td>
+        <td class="text-right">+0.023</td>
+        <td class="text-right">0.42</td>
+        <td class="text-right">1.24</td>
+        <td class="text-right">40%</td>
+      </tr>
+      <tr>
+        <td><strong>8</strong></td>
+        <td>Kuldeep Yadav</td>
+        <td class="text-right">302</td>
+        <td class="text-right">7.55</td>
+        <td class="text-right">8.15</td>
+        <td class="text-right">20</td>
+        <td class="text-right">0.079</td>
+        <td class="text-right">-0.061</td>
+        <td class="text-right">0.50</td>
+        <td class="text-right">1.23</td>
+        <td class="text-right">33%</td>
+      </tr>
+      <tr>
+        <td><strong>9</strong></td>
+        <td>Varun Chakravarthy</td>
+        <td class="text-right">390</td>
+        <td class="text-right">7.71</td>
+        <td class="text-right">8.27</td>
+        <td class="text-right">27</td>
+        <td class="text-right">0.094</td>
+        <td class="text-right">-0.041</td>
+        <td class="text-right">0.48</td>
+        <td class="text-right">1.16</td>
+        <td class="text-right">57%</td>
+      </tr>
+      <tr>
+        <td><strong>10</strong></td>
+        <td>Ravichandran Ashwin</td>
+        <td class="text-right">218</td>
+        <td class="text-right">8.06</td>
+        <td class="text-right">7.88</td>
+        <td class="text-right">11</td>
+        <td class="text-right">0.056</td>
+        <td class="text-right">+0.119</td>
+        <td class="text-right">0.45</td>
+        <td class="text-right">1.16</td>
+        <td class="text-right">37%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    <strong>Pressure rating</strong> = win-probability points added per delivery above peers on high-pressure balls (&times;100, leverage-standardised, opposition-adjusted, shrunk). <strong>Rise vs usual</strong> = pressure rating minus the same rating on ordinary deliveries. <strong>Consistency</strong> = shrunken share of pressure appearances (&ge;3 high-pressure balls) with a positive contribution. <strong>Score</strong> = rank-averaged composite across five pressure definitions (section 4). <strong>Top-10 in bootstrap</strong> = share of 30 match-level resamples in which the player stays in the top 10. SR/economy columns are raw and shown for readability.
+  </p>
+
+  <div class="callout">
+    <strong>Headline caveat:</strong> The data supports a clear top two in each list (Iyer and Gill for batters; Hazlewood for bowlers) with 93% bootstrap confidence, but the order of places 3–10 is statistically close.
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- PAGE 2 -->
+  <h2>2. Data and preparation</h2>
+  <ul>
+    <li><strong>Files used:</strong> ball-by-ball deliveries (200,999 rows, 867 matches), matches, competitions, teams, playing XI, and competition-team-player mapping. Player names come from the ball-by-ball file.</li>
+    <li><strong>Match filter:</strong> Matches with reduced overs, revised targets or D/L(S) results, abandoned/no-result matches, and matches whose innings did not finish were excluded because win probability is not comparable there. Super-over innings were excluded. <strong>803 matches remain (191,903 deliveries; 1st and 2nd innings only).</strong></li>
+    <li><strong>Run attribution:</strong> Batter runs are bat runs only; wides are charged to the bowler and are not a ball faced; leg-byes, byes, and penalty runs are credited to neither player; no-ball extras are charged to the bowler. Run-outs and retired-outs are not charged to the bowler; a non-striker run-out is not charged to the striker.</li>
+    <li><strong>Legal ball:</strong> Not a wide, no-ball or penalty row. Wickets = rows with a dismissal type.</li>
+  </ul>
+
+  <h2>3. Defining pressure</h2>
+  <p>
+    Pressure is defined as how much the next ball can swing the match: the <strong>leverage index (LI)</strong>. It combines every signal the brief mentions (required run rate, wickets in hand, balls remaining, innings stage, closeness) automatically because it is computed from an empirical model of the match state.
+  </p>
+
+  <h3>3.1 Win-probability model</h3>
+  <p>
+    We fit gradient-boosted classifiers on the state after each delivery, separately for innings 1 (features: legal balls left, wickets lost, runs scored, T20I flag) and innings 2 (balls left, wickets lost, runs required, target, T20I flag), with monotonic constraints (more runs required or more wickets lost can never help). Predictions are out-of-fold (5 folds grouped by match), so no delivery is scored by a model that saw its match. Terminal chase states are set exactly (target reached = 1, all out or balls exhausted = 0, tie = 0.5).
+  </p>
+  <p>
+    <strong>Out-of-fold Brier score:</strong> 0.223 (innings 1; a coin-flip is 0.25) and 0.145 (chase). Calibration is reliable in the middle and slightly over-confident at the extremes.
+  </p>
+
+  <h3>3.2 Leverage index and the high-pressure threshold</h3>
+  <p>
+    For each delivery, $\text{LI} = \sum_{o \in \text{outcomes}} P(o) \times |\Delta \text{Win Probability}|$. Outcome probabilities come from the empirical data by innings, phase (overs 1–6, 7–15, 16–20) and wickets-lost band. LI is divided by its overall mean, so 1.0 = an average ball. We define <strong>HIGH PRESSURE</strong> when $\text{LI} \ge 1.5\times$ average, which represents <strong>18.0% of deliveries (34,623 balls)</strong>; 1.0–1.5&times; is "elevated" and below 1.0&times; is "ordinary".
+  </p>
+
+  <h3>3.3 Does it separate pressure from ordinary situations?</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Tier</th>
+        <th class="text-right">Mean balls left</th>
+        <th class="text-right">Mean wickets lost</th>
+        <th class="text-right">Median required rate</th>
+        <th class="text-right">Mean |WP - 0.5|</th>
+        <th class="text-right">Balls</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Ordinary (&lt;1.0&times;)</td>
+        <td class="text-right">70</td>
+        <td class="text-right">2.5</td>
+        <td class="text-right">9.6</td>
+        <td class="text-right">0.35</td>
+        <td class="text-right">58,695</td>
+      </tr>
+      <tr>
+        <td>Elevated (1.0–1.5&times;)</td>
+        <td class="text-right">67</td>
+        <td class="text-right">2.3</td>
+        <td class="text-right">9.3</td>
+        <td class="text-right">0.21</td>
+        <td class="text-right">11,767</td>
+      </tr>
+      <tr>
+        <td><strong>High (&ge;1.5&times;)</strong></td>
+        <td class="text-right"><strong>44</strong></td>
+        <td class="text-right"><strong>3.5</strong></td>
+        <td class="text-right"><strong>9.8</strong></td>
+        <td class="text-right"><strong>0.19</strong></td>
+        <td class="text-right"><strong>17,602</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <!-- PAGE 3 -->
+  <h2>4. Performance measurement and rating</h2>
+  <h3>4.1 What is measured</h3>
+  <p>
+    Each delivery has a win-probability change $\text{dWP}$ (from the batting side's view). The batter's per-ball value is $\text{dWP} / \text{LI}$ (scaled by average LI), expressing how much of the possible swing the player captured; the bowler's value is the exact negative.
+  </p>
+
+  <h3>4.2 Opposition adjustment and shrinkage</h3>
+  <p>
+    Ball values are modelled as $\text{batter effect} + \text{bowler effect}$ using a sparse ridge regression (separately for high-pressure and ordinary deliveries). The opposing player's effect is estimated simultaneously, so facing weaker bowling attacks does not inflate a batter. The ridge penalty ($\lambda = 600$, chosen by 5-fold match-grouped cross-validation) is an empirical-Bayes shrinkage: players with few high-pressure balls are pulled toward the average.
+  </p>
+
+  <h3>4.3 Three components and the composite</h3>
+  <ul>
+    <li><strong>Pressure rating (50%):</strong> The shrunken high-pressure batter/bowler effect.</li>
+    <li><strong>Rise vs usual (25%):</strong> Pressure rating minus the same player's rating on ordinary deliveries (personal baseline).</li>
+    <li><strong>Consistency (25%):</strong> Share of pressure appearances (matches with &ge;3 high-pressure balls) with a positive contribution after opposition adjustment, shrunk toward 50% with 10 pseudo-appearances.</li>
+  </ul>
+  <p>Components are standardised ($z$-scores) among eligible players and combined 50/25/25.</p>
+
+  <h3>4.4 Ensemble over pressure definitions</h3>
+  <p>
+    The final score is the average composite across five specifications: $\text{LI} \ge 1.5$ (base), $\text{LI} \ge 1.25$, $\text{LI} \ge 2.0$, chase-only (2nd innings, $\text{LI} \ge 1.5$), and raw $\text{dWP}$ with no leverage scaling. Final ranks sort by this average.
+  </p>
+
+  <h2>5. Fair comparison</h2>
+  <ul>
+    <li><strong>Eligibility:</strong> Batters need &ge;100 high-pressure balls faced, bowlers &ge;72 high-pressure legal balls (12 overs), and both need &ge;15 matches containing high-pressure balls. This leaves 109 batters and 131 bowlers.</li>
+    <li><strong>Contexts:</strong> IPL and T20I deliveries are pooled; the opposition adjustment links the two through players who appear in both.</li>
+    <li><strong>Roles:</strong> Players are compared strictly on the pressure deliveries they faced/bowled, never on aggregate innings totals.</li>
+  </ul>
+
+  <h2>6. Reliability and limitations</h2>
+  <ul>
+    <li><strong>Rank stability (bootstrap):</strong> Resampling matches with replacement 30 times shows <strong>Iyer and Gill (93% each)</strong> and <strong>Hazlewood (93%)</strong> are highly stable in the top tier; places 3–10 have 30–60% retention.</li>
+    <li><strong>Rise vs usual:</strong> Top players like Gill, Iyer, Kohli, and Hazlewood are not necessarily "risers" but elite players whose performance does not drop under pressure. Others like Saim Ayub (+0.232), Taskin Ahmed (+0.062), and Ashwin (+0.119) rise noticeably above baseline.</li>
+    <li><strong>Split-half consistency:</strong> Batter pressure ratings carry a repeatable signal ($r = 0.17$, Spearman-Brown corrected 0.30); individual bowler ratings carry higher noise due to smaller sample sizes (100–400 balls).</li>
+  </ul>
+
+  <div class="footer-bar">
+    <span>Rajasthan Royals • SupeRR Selector Season 2</span>
+    <span>Round 1 Submission Document</span>
+  </div>
+
+</body>
+</html>
+
