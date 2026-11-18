@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClutchIQ – SupeRR Selector S2: Pressure Performance Dashboard</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .rr-pink-gradient { background: linear-gradient(135deg, #e10b65 0%, #a00746 100%); }
+    .card-glass {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .card-glass:hover {
+      border-color: rgba(225, 11, 101, 0.4);
+      transform: translateY(-2px);
+      transition: all 0.2s ease-in-out;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #e10b65; }
+  </style>
+</head>
+<body class="bg-[#0a0f1d] text-slate-100 min-h-screen p-4 md:p-8 antialiased selection:bg-[#e10b65] selection:text-white">
+
+  <!-- Header Section -->
+  <header class="max-w-7xl mx-auto mb-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#e10b65] shadow-lg shadow-pink-900/40 text-white font-bold text-lg">RR</span>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs uppercase tracking-widest font-semibold text-pink-400">SupeRR Selector Season 2</span>
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span class="text-xs text-slate-400">Round 1 Methodology</span>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Pressure Performance Intelligence Dashboard</h1>
+          </div>
+        </div>
+        <p class="text-sm text-slate-400 mt-2 max-w-2xl">
+          Empirical evaluation across <strong>191,903 deliveries</strong> from <strong>803 matches</strong> (383 IPL + 420 T20Is). Leveraging multi-definition win-probability added, opposition adjustment, and bootstrap stability.
+        </p>
+      </div>
+
+      <!-- Quick Metrics Summary Pills -->
+      <div class="grid grid-cols-3 gap-2 md:gap-3 bg-slate-900/80 p-2.5 rounded-2xl border border-slate-800">
+        <div class="px-3 py-2 rounded-xl bg-slate-800/60 text-center">
+          <div class="text-xs text-slate-400 font-medium">Deliveries</div>
+          <div class="text-base font-bold font-mono text-pink-400">191,903</div>
+        </div>
+        <div class="px-3 py-2 rounded-xl bg-slate-800/60 text-center">
+          <div class="text-xs text-slate-400 font-medium">Matches</div>
+          <div class="text-base font-bold font-mono text-cyan-400">803</div>
+        </div>
+        <div class="px-3 py-2 rounded-xl bg-slate-800/60 text-center">
+          <div class="text-xs text-slate-400 font-medium">High-P Cutoff</div>
+          <div class="text-base font-bold font-mono text-emerald-400">LI &ge; 1.5x</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs & Search Toolbar -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-6">
+      <div class="flex items-center p-1 bg-slate-900/90 rounded-xl border border-slate-800">
+        <button id="tab-batters" onclick="switchTab('batters')" class="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 bg-[#e10b65] text-white shadow-md shadow-pink-900/30">
+          <span>🏏</span> Top 10 Batters
+        </button>
+        <button id="tab-bowlers" onclick="switchTab('bowlers')" class="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-slate-200">
+          <span>🎯</span> Top 10 Bowlers
+        </button>
+        <button id="tab-matrix" onclick="switchTab('matrix')" class="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-slate-200">
+          <span>📊</span> Quadrant Matrix
+        </button>
+      </div>
+
+      <!-- Controls: Filter & Search -->
+      <div class="flex items-center gap-3">
+        <div class="relative flex-1 sm:w-64">
+          <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search player..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#e10b65] focus:ring-1 focus:ring-[#e10b65] transition">
+          <span class="absolute right-3 top-2.5 text-slate-500 text-sm">🔍</span>
+        </div>
+        <select id="tierFilter" onchange="applyFilters()" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-[#e10b65]">
+          <option value="all">All Tiers</option>
+          <option value="tier1">Tier 1: Outliers (90%+ Boot)</option>
+          <option value="tier2">Tier 2: Contenders</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto space-y-8">
+
+    <!-- TAB 1: BATTERS VIEW -->
+    <section id="battersView" class="space-y-6">
+      
+      <!-- Key Insight Banner -->
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-pink-950/40 via-purple-950/20 to-slate-900 border border-pink-900/30 flex items-start gap-3">
+        <span class="text-2xl mt-0.5">💡</span>
+        <div>
+          <h4 class="text-sm font-bold text-pink-300">Analytical Takeaway: The Clear Top 2 & High-Floor Elite</h4>
+          <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+            <strong>Shreyas Iyer (2.02)</strong> and <strong>Shubman Gill (1.99)</strong> stand out as statistical outliers with <strong>93% bootstrap confidence</strong>. Both combine high strike rate elevation (+20 to +27 points above usual) with exceptional win-probability preservation under extreme leverage.
+          </p>
+        </div>
+      </div>
+
+      <!-- Batters Grid (Top 10 Cards) -->
+      <div id="battersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Batters Complete Comparison Table -->
+      <div class="card-glass rounded-2xl p-5 overflow-hidden">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>📋</span> Full Batting Pressure Metrics Table
+          </h3>
+          <span class="text-xs text-slate-400">Sorted by Final Composite Score</span>
+        </div>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
+                <th class="py-3 px-3">Rank</th>
+                <th class="py-3 px-3">Batter</th>
+                <th class="py-3 px-3 text-right">Press Balls</th>
+                <th class="py-3 px-3 text-right">SR (Press)</th>
+                <th class="py-3 px-3 text-right">SR (Usual)</th>
+                <th class="py-3 px-3 text-right">&Delta; SR</th>
+                <th class="py-3 px-3 text-right">Outs</th>
+                <th class="py-3 px-3 text-right">Rating</th>
+                <th class="py-3 px-3 text-right">Rise vs Usual</th>
+                <th class="py-3 px-3 text-right">Consistency</th>
+                <th class="py-3 px-3 text-right">Score</th>
+                <th class="py-3 px-3 text-right">Bootstrap</th>
+              </tr>
+            </thead>
+            <tbody id="battersTableBody" class="divide-y divide-slate-800/60 font-mono">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: BOWLERS VIEW -->
+    <section id="bowlersView" class="space-y-6 hidden">
+      
+      <!-- Key Insight Banner -->
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-blue-950/20 to-slate-900 border border-cyan-900/30 flex items-start gap-3">
+        <span class="text-2xl mt-0.5">🛡️</span>
+        <div>
+          <h4 class="text-sm font-bold text-cyan-300">Analytical Takeaway: Hazlewood's Supremacy & Spin Choke</h4>
+          <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+            <strong>Josh Hazlewood (2.58)</strong> dominates the bowling rankings with <strong>93% bootstrap confidence</strong> and 25 pressure wickets. Meanwhile, spinners like <strong>Krunal Pandya (7.79)</strong>, <strong>Sunil Narine (6.97)</strong>, and <strong>Sufiyan Muqeem (4.58)</strong> outperform traditional quicks through boundary suppression.
+          </p>
+        </div>
+      </div>
+
+      <!-- Bowlers Grid (Top 10 Cards) -->
+      <div id="bowlersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Bowlers Complete Comparison Table -->
+      <div class="card-glass rounded-2xl p-5 overflow-hidden">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>📋</span> Full Bowling Pressure Metrics Table
+          </h3>
+          <span class="text-xs text-slate-400">Sorted by Final Composite Score</span>
+        </div>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
+                <th class="py-3 px-3">Rank</th>
+                <th class="py-3 px-3">Bowler</th>
+                <th class="py-3 px-3 text-right">Press Balls</th>
+                <th class="py-3 px-3 text-right">Econ (Press)</th>
+                <th class="py-3 px-3 text-right">Econ (Usual)</th>
+                <th class="py-3 px-3 text-right">&Delta; Econ</th>
+                <th class="py-3 px-3 text-right">Wickets</th>
+                <th class="py-3 px-3 text-right">Rating</th>
+                <th class="py-3 px-3 text-right">Rise vs Usual</th>
+                <th class="py-3 px-3 text-right">Consistency</th>
+                <th class="py-3 px-3 text-right">Score</th>
+                <th class="py-3 px-3 text-right">Bootstrap</th>
+              </tr>
+            </thead>
+            <tbody id="bowlersTableBody" class="divide-y divide-slate-800/60 font-mono">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: QUADRANT MATRIX VIEW -->
+    <section id="matrixView" class="space-y-6 hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Batting Scatter Plot Card -->
+        <div class="card-glass rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h3 class="text-sm font-bold text-white">Batting: Pressure SR vs Usual SR</h3>
+              <p class="text-xs text-slate-400">Points above the diagonal indicate elevated striking under pressure</p>
+            </div>
+            <span class="text-xs font-mono text-pink-400 bg-pink-950/60 px-2 py-1 rounded-md border border-pink-900/40">10 Batters</span>
+          </div>
+          <div class="relative w-full h-80 bg-slate-950/80 rounded-xl p-4 border border-slate-800/80">
+            <svg id="batterScatterSvg" class="w-full h-full" viewBox="0 0 500 320"></svg>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-400 mt-2">
+            <span>&larr; Standard (130-150 SR)</span>
+            <span class="text-pink-400 font-semibold">Upper Right: Elite Dual-Phase Striking</span>
+            <span>Hyper-Aggressive (190+ SR) &rarr;</span>
+          </div>
+        </div>
+
+        <!-- Bowling Scatter Plot Card -->
+        <div class="card-glass rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h3 class="text-sm font-bold text-white">Bowling: Pressure Econ vs Usual Econ</h3>
+              <p class="text-xs text-slate-400">Points below the diagonal indicate lower economy under pressure</p>
+            </div>
+            <span class="text-xs font-mono text-cyan-400 bg-cyan-950/60 px-2 py-1 rounded-md border border-cyan-900/40">10 Bowlers</span>
+          </div>
+          <div class="relative w-full h-80 bg-slate-950/80 rounded-xl p-4 border border-slate-800/80">
+            <svg id="bowlerScatterSvg" class="w-full h-full" viewBox="0 0 500 320"></svg>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-400 mt-2">
+            <span>&larr; Suffocating (4.5 - 7.0 Econ)</span>
+            <span class="text-cyan-400 font-semibold">Lower Left: Choke Artists Under Pressure</span>
+            <span>Attacking / Expensive (8.5+ Econ) &rarr;</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bootstrap Stability Ranking Chart -->
+      <div class="card-glass rounded-2xl p-5">
+        <h3 class="text-sm font-bold text-white mb-2">Model Robustness: 30-Match Bootstrap Confidence Interval</h3>
+        <p class="text-xs text-slate-400 mb-6">Percentage of 30 match-level resamples in which each player stays within the global Top 10.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Batters Bootstrap -->
+          <div class="space-y-3">
+            <h4 class="text-xs font-bold text-pink-400 uppercase tracking-wider">Batters Top-10 Retention %</h4>
+            <div id="battersBootstrapBars" class="space-y-2"></div>
+          </div>
+
+          <!-- Bowlers Bootstrap -->
+          <div class="space-y-3">
+            <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Bowlers Top-10 Retention %</h4>
+            <div id="bowlersBootstrapBars" class="space-y-2"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Player Deep-Dive Modal -->
+  <div id="playerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="card-glass w-full max-w-lg rounded-2xl p-6 border border-slate-700 shadow-2xl relative">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg font-bold">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <footer class="max-w-7xl mx-auto mt-12 pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
+    SupeRR Selector Season 2 • Rajasthan Royals Analytics War Room • Powered by Antigravity
+  </footer>
+
+  <script>
+    // DATA STORE (Directly from SupeRR Selector S2 PDF)
+    const BATTERS = [
+      { rank: 1, name: "Shreyas Iyer", balls: 323, srPress: 173, srUsual: 153, outs: 9, rating: 0.127, rise: -0.009, consist: 0.74, score: 2.02, boot: 93, role: "Anchor / Finisher", tier: "tier1" },
+      { rank: 2, name: "Shubman Gill", balls: 379, srPress: 174, srUsual: 147, outs: 10, rating: 0.132, rise: +0.034, consist: 0.81, score: 1.99, boot: 93, role: "Elite Chase Master", tier: "tier1" },
+      { rank: 3, name: "Virat Kohli", balls: 430, srPress: 156, srUsual: 145, outs: 12, rating: 0.104, rise: -0.072, consist: 0.77, score: 1.40, boot: 40, role: "High-Floor Legend", tier: "tier2" },
+      { rank: 4, name: "Glenn Phillips", balls: 184, srPress: 148, srUsual: 151, outs: 6, rating: 0.092, rise: +0.045, consist: 0.73, score: 1.38, boot: 57, role: "Crisis Counter-Puncher", tier: "tier2" },
+      { rank: 5, name: "Jos Buttler", balls: 345, srPress: 172, srUsual: 156, outs: 14, rating: 0.099, rise: -0.059, consist: 0.72, score: 1.26, boot: 43, role: "Explosive Opener/Closer", tier: "tier2" },
+      { rank: 6, name: "Rinku Singh", balls: 223, srPress: 169, srUsual: 150, outs: 9, rating: 0.061, rise: -0.053, consist: 0.69, score: 1.21, boot: 37, role: "Ice-Cold Death Closer", tier: "tier2" },
+      { rank: 7, name: "Travis Head", balls: 148, srPress: 196, srUsual: 176, outs: 6, rating: 0.088, rise: +0.157, consist: 0.69, score: 1.05, boot: 37, role: "Hyper-Aggressive Opener", tier: "tier2" },
+      { rank: 8, name: "Abhishek Sharma", balls: 296, srPress: 191, srUsual: 190, outs: 19, rating: 0.081, rise: -0.047, consist: 0.69, score: 1.01, boot: 33, role: "Maximum Intent Enforcer", tier: "tier2" },
+      { rank: 9, name: "Phil Salt", balls: 217, srPress: 174, srUsual: 175, outs: 7, rating: 0.088, rise: -0.041, consist: 0.79, score: 0.99, boot: 30, role: "Powerplay Disrupter", tier: "tier2" },
+      { rank: 10, name: "Saim Ayub", balls: 103, srPress: 187, srUsual: 133, outs: 5, rating: 0.081, rise: +0.232, consist: 0.65, score: 0.93, boot: 30, role: "High-Clutch Elevation Risers", tier: "tier2" }
+    ];
+
+    const BOWLERS = [
+      { rank: 1, name: "Josh Hazlewood", balls: 231, econPress: 9.01, econUsual: 8.42, wkts: 25, rating: 0.131, rise: +0.003, consist: 0.52, score: 2.58, boot: 93, role: "Supreme Test-Length Enforcer", tier: "tier1" },
+      { rank: 2, name: "Krunal Pandya", balls: 234, econPress: 7.79, econUsual: 8.00, wkts: 16, rating: 0.125, rise: +0.076, consist: 0.50, score: 1.74, boot: 60, role: "Middle-Overs Squeeze", tier: "tier2" },
+      { rank: 3, name: "Taskin Ahmed", balls: 157, econPress: 6.57, econUsual: 8.58, wkts: 12, rating: 0.062, rise: +0.062, consist: 0.44, score: 1.52, boot: 40, role: "Pace Elevation Specialist", tier: "tier2" },
+      { rank: 4, name: "Sunil Narine", balls: 304, econPress: 6.97, econUsual: 6.88, wkts: 15, rating: 0.091, rise: +0.023, consist: 0.45, score: 1.49, boot: 60, role: "Mystery Spin Choke", tier: "tier2" },
+      { rank: 5, name: "Rashid Khan", balls: 424, econPress: 7.75, econUsual: 7.51, wkts: 30, rating: 0.071, rise: +0.022, consist: 0.38, score: 1.25, boot: 30, role: "Volume Wicket Taker", tier: "tier2" },
+      { rank: 6, name: "Sufiyan Muqeem", balls: 114, econPress: 4.58, econUsual: 6.56, wkts: 9, rating: 0.087, rise: +0.017, consist: 0.52, score: 1.24, boot: 43, role: "Economy Lockout Artist", tier: "tier2" },
+      { rank: 7, name: "Mohsin Khan", balls: 146, econPress: 8.67, econUsual: 8.58, wkts: 12, rating: 0.089, rise: +0.023, consist: 0.42, score: 1.24, boot: 40, role: "Death Yorker Executioner", tier: "tier2" },
+      { rank: 8, name: "Kuldeep Yadav", balls: 302, econPress: 7.55, econUsual: 8.15, wkts: 20, rating: 0.079, rise: -0.061, consist: 0.50, score: 1.23, boot: 33, role: "Attacking Wrist Spinner", tier: "tier2" },
+      { rank: 9, name: "Varun Chakravarthy", balls: 390, econPress: 7.71, econUsual: 8.27, wkts: 27, rating: 0.094, rise: -0.041, consist: 0.48, score: 1.16, boot: 57, role: "Deception & Matchup Squeeze", tier: "tier2" },
+      { rank: 10, name: "Ravichandran Ashwin", balls: 218, econPress: 8.06, econUsual: 7.88, wkts: 11, rating: 0.056, rise: +0.119, consist: 0.45, score: 1.16, boot: 37, role: "Tactical Chessmaster", tier: "tier2" }
+    ];
+
+    let currentTab = 'batters';
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('battersView').classList.add('hidden');
+      document.getElementById('bowlersView').classList.add('hidden');
+      document.getElementById('matrixView').classList.add('hidden');
+
+      document.getElementById('tab-batters').className = 'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-slate-200';
+      document.getElementById('tab-bowlers').className = 'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-slate-200';
+      document.getElementById('tab-matrix').className = 'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-slate-200';
+
+      if (tab === 'batters') {
+        document.getElementById('battersView').classList.remove('hidden');
+        document.getElementById('tab-batters').className = 'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 bg-[#e10b65] text-white shadow-md shadow-pink-900/30';
+      } else if (tab === 'bowlers') {
+        document.getElementById('bowlersView').classList.remove('hidden');
+        document.getElementById('tab-bowlers').className = 'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 bg-[#e10b65] text-white shadow-md shadow-pink-900/30';
+      } else if (tab === 'matrix') {
+        document.getElementById('matrixView').classList.remove('hidden');
+        document.getElementById('tab-matrix').className = 'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 bg-[#e10b65] text-white shadow-md shadow-pink-900/30';
+        renderScatterCharts();
+        renderBootstrapBars();
+      }
+      applyFilters();
+    }
+
+    function renderBatters(data) {
+      const grid = document.getElementById('battersGrid');
+      const tableBody = document.getElementById('battersTableBody');
+      grid.innerHTML = '';
+      tableBody.innerHTML = '';
+
+      data.forEach(p => {
+        // Grid Card
+        const deltaSR = p.srPress - p.srUsual;
+        const deltaColor = deltaSR >= 0 ? 'text-emerald-400' : 'text-amber-400';
+        const deltaSign = deltaSR >= 0 ? '+' : '';
+        const isTopTier = p.boot >= 90;
+
+        const card = document.createElement('div');
+        card.className = 'card-glass rounded-2xl p-4 flex flex-col justify-between cursor-pointer relative overflow-hidden';
+        card.onclick = () => openModal(p, 'batter');
+        card.innerHTML = `
+          ${isTopTier ? '<div class="absolute top-0 right-0 bg-emerald-500 text-black font-extrabold text-[9px] px-2 py-0.5 rounded-bl-lg tracking-wider uppercase font-mono">TIER 1 (93% BOOT)</div>' : ''}
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg ${p.rank <= 2 ? 'bg-[#e10b65] text-white' : 'bg-slate-800 text-slate-300'} text-xs font-bold font-mono">
+                #${p.rank}
+              </span>
+              <span class="text-xs font-mono text-pink-400 font-bold bg-pink-950/60 px-2 py-0.5 rounded border border-pink-900/40">
+                Score: ${p.score.toFixed(2)}
+              </span>
+            </div>
+            <h4 class="text-base font-bold text-white tracking-tight">${p.name}</h4>
+            <p class="text-xs text-slate-400 mb-3">${p.role}</p>
+
+            <div class="grid grid-cols-2 gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 mb-3">
+              <div>
+                <div class="text-[10px] text-slate-500 font-mono">PRESS SR</div>
+                <div class="text-sm font-bold font-mono text-white">${p.srPress} <span class="text-[10px] ${deltaColor}">(${deltaSign}${deltaSR})</span></div>
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-500 font-mono">USUAL SR</div>
+                <div class="text-sm font-bold font-mono text-slate-300">${p.srUsual}</div>
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-500 font-mono">PRESS BALLS</div>
+                <div class="text-sm font-bold font-mono text-slate-300">${p.balls}</div>
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-500 font-mono">CONSISTENCY</div>
+                <div class="text-sm font-bold font-mono text-cyan-400">${(p.consist * 100).toFixed(0)}%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+            <span>Rating: <strong class="text-slate-200 font-mono">${p.rating.toFixed(3)}</strong></span>
+            <span>Boot: <strong class="${p.boot >= 50 ? 'text-emerald-400' : 'text-slate-300'} font-mono">${p.boot}%</strong></span>
+          </div>
+        `;
+        grid.appendChild(card);
+
+        // Table Row
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-800/40 cursor-pointer transition';
+        row.onclick = () => openModal(p, 'batter');
+        row.innerHTML = `
+          <td class="py-2.5 px-3 font-bold ${p.rank <= 2 ? 'text-pink-400' : 'text-slate-400'}">#${p.rank}</td>
+          <td class="py-2.5 px-3 font-sans font-medium text-white">${p.name}</td>
+          <td class="py-2.5 px-3 text-right text-slate-300">${p.balls}</td>
+          <td class="py-2.5 px-3 text-right font-bold text-white">${p.srPress}</td>
+          <td class="py-2.5 px-3 text-right text-slate-400">${p.srUsual}</td>
+          <td class="py-2.5 px-3 text-right font-bold ${deltaColor}">${deltaSign}${deltaSR}</td>
+          <td class="py-2.5 px-3 text-right text-slate-400">${p.outs}</td>
+          <td class="py-2.5 px-3 text-right text-slate-300">${p.rating.toFixed(3)}</td>
+          <td class="py-2.5 px-3 text-right ${p.rise >= 0 ? 'text-emerald-400' : 'text-slate-400'}">${p.rise >= 0 ? '+' : ''}${p.rise.toFixed(3)}</td>
+          <td class="py-2.5 px-3 text-right text-cyan-400">${(p.consist * 100).toFixed(0)}%</td>
+          <td class="py-2.5 px-3 text-right font-bold text-pink-400">${p.score.toFixed(2)}</td>
+          <td class="py-2.5 px-3 text-right font-bold ${p.boot >= 50 ? 'text-emerald-400' : 'text-slate-400'}">${p.boot}%</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function renderBowlers(data) {
+      const grid = document.getElementById('bowlersGrid');
+      const tableBody = document.getElementById('bowlersTableBody');
+      grid.innerHTML = '';
+      tableBody.innerHTML = '';
+
+      data.forEach(p => {
+        const deltaEcon = (p.econPress - p.econUsual).toFixed(2);
+        const deltaColor = deltaEcon <= 0 ? 'text-emerald-400' : 'text-amber-400';
+        const deltaSign = deltaEcon > 0 ? '+' : '';
+        const isTopTier = p.boot >= 90;
+
+        const card = document.createElement('div');
+        card.className = 'card-glass rounded-2xl p-4 flex flex-col justify-between cursor-pointer relative overflow-hidden';
+        card.onclick = () => openModal(p, 'bowler');
+        card.innerHTML = `
+          ${isTopTier ? '<div class="absolute top-0 right-0 bg-cyan-400 text-black font-extrabold text-[9px] px-2 py-0.5 rounded-bl-lg tracking-wider uppercase font-mono">SUPREME #1 (93% BOOT)</div>' : ''}
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg ${p.rank === 1 ? 'bg-cyan-500 text-black' : 'bg-slate-800 text-slate-300'} text-xs font-bold font-mono">
+                #${p.rank}
+              </span>
+              <span class="text-xs font-mono text-cyan-400 font-bold bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-900/40">
+                Score: ${p.score.toFixed(2)}
+              </span>
+            </div>
+            <h4 class="text-base font-bold text-white tracking-tight">${p.name}</h4>
+            <p class="text-xs text-slate-400 mb-3">${p.role}</p>
+
+            <div class="grid grid-cols-2 gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 mb-3">
+              <div>
+                <div class="text-[10px] text-slate-500 font-mono">PRESS ECON</div>
+                <div class="text-sm font-bold font-mono text-white">${p.econPress} <span class="text-[10px] ${deltaColor}">(${deltaSign}${deltaEcon})</span></div>
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-500 font-mono">PRESS WKTS</div>
+                <div class="text-sm font-bold font-mono text-pink-400">${p.wkts}</div>
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-500 font-mono">PRESS BALLS</div>
+                <div class="text-sm font-bold font-mono text-slate-300">${p.balls}</div>
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-500 font-mono">CONSISTENCY</div>
+                <div class="text-sm font-bold font-mono text-cyan-400">${(p.consist * 100).toFixed(0)}%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+            <span>Rating: <strong class="text-slate-200 font-mono">${p.rating.toFixed(3)}</strong></span>
+            <span>Boot: <strong class="${p.boot >= 50 ? 'text-emerald-400' : 'text-slate-300'} font-mono">${p.boot}%</strong></span>
+          </div>
+        `;
+        grid.appendChild(card);
+
+        // Table Row
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-800/40 cursor-pointer transition';
+        row.onclick = () => openModal(p, 'bowler');
+        row.innerHTML = `
+          <td class="py-2.5 px-3 font-bold ${p.rank === 1 ? 'text-cyan-400' : 'text-slate-400'}">#${p.rank}</td>
+          <td class="py-2.5 px-3 font-sans font-medium text-white">${p.name}</td>
+          <td class="py-2.5 px-3 text-right text-slate-300">${p.balls}</td>
+          <td class="py-2.5 px-3 text-right font-bold text-white">${p.econPress.toFixed(2)}</td>
+          <td class="py-2.5 px-3 text-right text-slate-400">${p.econUsual.toFixed(2)}</td>
+          <td class="py-2.5 px-3 text-right font-bold ${deltaColor}">${deltaSign}${deltaEcon}</td>
+          <td class="py-2.5 px-3 text-right font-bold text-pink-400">${p.wkts}</td>
+          <td class="py-2.5 px-3 text-right text-slate-300">${p.rating.toFixed(3)}</td>
+          <td class="py-2.5 px-3 text-right ${p.rise >= 0 ? 'text-emerald-400' : 'text-slate-400'}">${p.rise >= 0 ? '+' : ''}${p.rise.toFixed(3)}</td>
+          <td class="py-2.5 px-3 text-right text-cyan-400">${(p.consist * 100).toFixed(0)}%</td>
+          <td class="py-2.5 px-3 text-right font-bold text-cyan-400">${p.score.toFixed(2)}</td>
+          <td class="py-2.5 px-3 text-right font-bold ${p.boot >= 50 ? 'text-emerald-400' : 'text-slate-400'}">${p.boot}%</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const tier = document.getElementById('tierFilter').value;
+
+      const filteredBatters = BATTERS.filter(p => {
+        const matchesQ = p.name.toLowerCase().includes(q) || p.role.toLowerCase().includes(q);
+        const matchesTier = tier === 'all' || p.tier === tier;
+        return matchesQ && matchesTier;
+      });
+
+      const filteredBowlers = BOWLERS.filter(p => {
+        const matchesQ = p.name.toLowerCase().includes(q) || p.role.toLowerCase().includes(q);
+        const matchesTier = tier === 'all' || p.tier === tier;
+        return matchesQ && matchesTier;
+      });
+
+      renderBatters(filteredBatters);
+      renderBowlers(filteredBowlers);
+    }
+
+    function renderScatterCharts() {
+      // 1. Batter Scatter (X: SR Usual [130-200], Y: SR Press [140-210])
+      const bSvg = document.getElementById('batterScatterSvg');
+      bSvg.innerHTML = '';
+      
+      // Grid lines & diagonal
+      const minX = 130, maxX = 200, minY = 140, maxY = 210;
+      const w = 500, h = 320, p = 40;
+
+      const mapX = (val) => p + ((val - minX) / (maxX - minX)) * (w - 2 * p);
+      const mapY = (val) => h - p - ((val - minY) / (maxY - minY)) * (h - 2 * p);
+
+      // Draw Axes
+      bSvg.innerHTML += `<line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#334155" stroke-width="1"/>`;
+      bSvg.innerHTML += `<line x1="${p}" y1="${p}" x2="${p}" y2="${h-p}" stroke="#334155" stroke-width="1"/>`;
+      
+      // Diagonal equal line (y = x)
+      const diagStart = Math.max(minX, minY);
+      const diagEnd = Math.min(maxX, maxY);
+      bSvg.innerHTML += `<line x1="${mapX(diagStart)}" y1="${mapY(diagStart)}" x2="${mapX(diagEnd)}" y2="${mapY(diagEnd)}" stroke="#475569" stroke-dasharray="4" stroke-width="1.5"/>`;
+
+      // Plot Batters
+      BATTERS.forEach(b => {
+        const cx = mapX(b.srUsual);
+        const cy = mapY(b.srPress);
+        const isLeader = b.rank <= 2;
+        const color = isLeader ? '#e10b65' : '#38bdf8';
+        const r = isLeader ? 7 : 5;
+
+        bSvg.innerHTML += `
+          <g class="cursor-pointer" onclick="openModalByName('${b.name}', 'batter')">
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" stroke="#ffffff" stroke-width="${isLeader ? 2 : 1}" opacity="0.9"/>
+            <text x="${cx + 8}" y="${cy + 4}" fill="#cbd5e1" font-size="10" font-family="monospace">${b.name.split(' ').pop()} (#${b.rank})</text>
+          </g>
+        `;
+      });
+
+      // 2. Bowler Scatter (X: Econ Usual [6-9], Y: Econ Press [4-10])
+      const boSvg = document.getElementById('bowlerScatterSvg');
+      boSvg.innerHTML = '';
+      const bMinX = 6.0, bMaxX = 9.0, bMinY = 4.0, bMaxY = 10.0;
+      const bMapX = (val) => p + ((val - bMinX) / (bMaxX - bMinX)) * (w - 2 * p);
+      const bMapY = (val) => h - p - ((val - bMinY) / (bMaxY - bMinY)) * (h - 2 * p);
+
+      // Axes
+      boSvg.innerHTML += `<line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#334155" stroke-width="1"/>`;
+      boSvg.innerHTML += `<line x1="${p}" y1="${p}" x2="${p}" y2="${h-p}" stroke="#334155" stroke-width="1"/>`;
+
+      // Diagonal equal line (y = x)
+      boSvg.innerHTML += `<line x1="${bMapX(6.0)}" y1="${bMapY(6.0)}" x2="${bMapX(9.0)}" y2="${bMapY(9.0)}" stroke="#475569" stroke-dasharray="4" stroke-width="1.5"/>`;
+
+      // Plot Bowlers
+      BOWLERS.forEach(b => {
+        const cx = bMapX(b.econUsual);
+        const cy = bMapY(b.econPress);
+        const isLeader = b.rank === 1;
+        const color = isLeader ? '#22d3ee' : '#ec4899';
+        const r = isLeader ? 8 : 5;
+
+        boSvg.innerHTML += `
+          <g class="cursor-pointer" onclick="openModalByName('${b.name}', 'bowler')">
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" stroke="#ffffff" stroke-width="${isLeader ? 2 : 1}" opacity="0.9"/>
+            <text x="${cx + 8}" y="${cy + 4}" fill="#cbd5e1" font-size="10" font-family="monospace">${b.name.split(' ').pop()} (#${b.rank})</text>
+          </g>
+        `;
+      });
+    }
+
+    function renderBootstrapBars() {
+      const bContainer = document.getElementById('battersBootstrapBars');
+      const boContainer = document.getElementById('bowlersBootstrapBars');
+      bContainer.innerHTML = '';
+      boContainer.innerHTML = '';
+
+      BATTERS.forEach(b => {
+        const bar = document.createElement('div');
+        bar.className = 'flex items-center gap-3 text-xs font-mono';
+        bar.innerHTML = `
+          <span class="w-32 truncate text-slate-300">#${b.rank} ${b.name}</span>
+          <div class="flex-1 bg-slate-900 rounded-full h-2.5 overflow-hidden border border-slate-800">
+            <div class="bg-gradient-to-r from-pink-600 to-[#e10b65] h-full rounded-full" style="width: ${b.boot}%"></div>
+          </div>
+          <span class="w-10 text-right font-bold ${b.boot >= 80 ? 'text-emerald-400' : 'text-slate-400'}">${b.boot}%</span>
+        `;
+        bContainer.appendChild(bar);
+      });
+
+      BOWLERS.forEach(b => {
+        const bar = document.createElement('div');
+        bar.className = 'flex items-center gap-3 text-xs font-mono';
+        bar.innerHTML = `
+          <span class="w-32 truncate text-slate-300">#${b.rank} ${b.name}</span>
+          <div class="flex-1 bg-slate-900 rounded-full h-2.5 overflow-hidden border border-slate-800">
+            <div class="bg-gradient-to-r from-cyan-600 to-cyan-400 h-full rounded-full" style="width: ${b.boot}%"></div>
+          </div>
+          <span class="w-10 text-right font-bold ${b.boot >= 80 ? 'text-emerald-400' : 'text-slate-400'}">${b.boot}%</span>
+        `;
+        boContainer.appendChild(bar);
+      });
+    }
+
+    function openModalByName(name, type) {
+      const list = type === 'batter' ? BATTERS : BOWLERS;
+      const player = list.find(p => p.name === name);
+      if (player) openModal(player, type);
+    }
+
+    function openModal(p, type) {
+      const modal = document.getElementById('playerModal');
+      const content = document.getElementById('modalContent');
+      const isBatter = type === 'batter';
+
+      content.innerHTML = `
+        <div class="flex items-start justify-between mb-4 pb-3 border-b border-slate-800">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono px-2 py-0.5 rounded font-bold ${isBatter ? 'bg-pink-950 text-pink-400 border border-pink-900' : 'bg-cyan-950 text-cyan-400 border border-cyan-900'}">
+                ${isBatter ? 'BATTER' : 'BOWLER'} RANK #${p.rank}
+              </span>
+              <span class="text-xs font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-900/40">
+                Composite Score: ${p.score.toFixed(2)}
+              </span>
+            </div>
+            <h3 class="text-xl font-bold text-white mt-1">${p.name}</h3>
+            <p class="text-xs text-slate-400">${p.role}</p>
+          </div>
+        </div>
+
+        <div class="space-y-3 font-mono text-xs">
+          <div class="grid grid-cols-2 gap-3 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800">
+            <div>
+              <span class="text-slate-500">${isBatter ? 'PRESSURE STRIKE RATE' : 'PRESSURE ECONOMY'}</span>
+              <div class="text-base font-bold text-white">${isBatter ? p.srPress : p.econPress}</div>
+            </div>
+            <div>
+              <span class="text-slate-500">${isBatter ? 'USUAL STRIKE RATE' : 'USUAL ECONOMY'}</span>
+              <div class="text-base font-bold text-slate-300">${isBatter ? p.srUsual : p.econUsual}</div>
+            </div>
+            <div>
+              <span class="text-slate-500">PRESSURE DELIVERIES</span>
+              <div class="text-base font-bold text-slate-200">${p.balls} balls</div>
+            </div>
+            <div>
+              <span class="text-slate-500">${isBatter ? 'DISMISSALS' : 'PRESSURE WICKETS'}</span>
+              <div class="text-base font-bold ${isBatter ? 'text-slate-300' : 'text-pink-400'}">${isBatter ? p.outs : p.wkts}</div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
+            <div class="flex justify-between">
+              <span class="text-slate-400 font-sans">Leverage-Adjusted Pressure Rating:</span>
+              <span class="text-white font-bold">${p.rating.toFixed(3)}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400 font-sans">Elevation vs Usual Level:</span>
+              <span class="${p.rise >= 0 ? 'text-emerald-400' : 'text-amber-400'} font-bold">${p.rise >= 0 ? '+' : ''}${p.rise.toFixed(3)}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400 font-sans">Appearance Consistency (>0 WPA):</span>
+              <span class="text-cyan-400 font-bold">${(p.consist * 100).toFixed(0)}%</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400 font-sans">Bootstrap Top-10 Retention:</span>
+              <span class="text-emerald-400 font-bold">${p.boot}% (30 resamples)</span>
+            </div>
+          </div>
+
+          <div class="text-[11px] font-sans text-slate-400 leading-relaxed bg-slate-950/40 p-3 rounded-lg border border-slate-800/60">
+            <strong>Model Summary:</strong> ${p.name} was evaluated across 5 distinct pressure definitions (LI &ge; 1.25, 1.5, 2.0, Chase-only, and Raw WPA). Opposition adjustments account for bowler/batter strength using sparse ridge shrinkage (&lambda;=600).
+          </div>
+        </div>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('playerModal').classList.add('hidden');
+    }
+
+    // Close modal on click outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('playerModal');
+      if (event.target === modal) closeModal();
+    };
+
+    // Initialize
+    applyFilters();
+  </script>
+</body>
+</html>
